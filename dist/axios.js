@@ -161,16 +161,10 @@ var axios =
 	
 	module.exports = {
 	  transformRequest: [function (data) {
-	    if (utils.isArrayBuffer(data)) {
-	      return data;
-	    }
-	    if (utils.isArrayBufferView(data)) {
-	      return data.buffer;
-	    }
-	    if (utils.isObject(data) && !utils.isFile(data) && !utils.isBlob(data)) {
-	      return JSON.stringify(data);
-	    }
-	    return data;
+	    return utils.isObject(data) &&
+	          !utils.isFile(data) &&
+	          !utils.isBlob(data) ?
+	            JSON.stringify(data) : data;
 	  }],
 	
 	  transformResponse: [function (data) {
@@ -212,30 +206,6 @@ var axios =
 	 */
 	function isArray(val) {
 	  return toString.call(val) === '[object Array]';
-	}
-	
-	/**
-	 * Determine if a value is an ArrayBuffer
-	 *
-	 * @param {Object} val The value to test
-	 * @returns {boolean} True if value is an ArrayBuffer, otherwise false
-	 */
-	function isArrayBuffer(val) {
-	  return toString.call(val) === '[object ArrayBuffer]';
-	}
-	
-	/**
-	 * Determine if a value is a view on an ArrayBuffer
-	 *
-	 * @param {Object} val The value to test
-	 * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
-	 */
-	function isArrayBufferView(val) {
-	  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
-	    return ArrayBuffer.isView(val);
-	  } else {
-	    return (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
-	  }
 	}
 	
 	/**
@@ -379,8 +349,6 @@ var axios =
 	
 	module.exports = {
 	  isArray: isArray,
-	  isArrayBuffer: isArrayBuffer,
-	  isArrayBufferView: isArrayBufferView,
 	  isString: isString,
 	  isNumber: isNumber,
 	  isObject: isObject,
@@ -513,10 +481,6 @@ var axios =
 	        throw e;
 	      }
 	    }
-	  }
-	
-	  if (utils.isArrayBuffer(data)) {
-	    data = new DataView(data);
 	  }
 	
 	  // Send the request
