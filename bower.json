@@ -27,7 +27,6 @@
 		"node_modules",
 		"sandbox",
 		"test",
-    "CONTRIBUTING.md",
 		"Gruntfile.js",
 		"index.js",
 		"karma.conf.js",
