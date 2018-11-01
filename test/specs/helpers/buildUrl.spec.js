@@ -30,7 +30,7 @@ describe('helpers::buildUrl', function () {
   it('should support array params', function () {
     expect(buildUrl('/foo', {
       foo: ['bar', 'baz']
-    })).toEqual('/foo?foo=bar&foo=baz');
+    })).toEqual('/foo?foo[]=bar&foo[]=baz');
   });
 
   it('should support special char params', function () {
@@ -43,14 +43,6 @@ describe('helpers::buildUrl', function () {
     expect(buildUrl('/foo?foo=bar', {
       bar: 'baz'
     })).toEqual('/foo?foo=bar&bar=baz');
-  });
-
-  it('should support "length" parameter', function () {
-    expect(buildUrl('/foo', {
-      query: 'bar',
-      start: 0,
-      length: 5
-    })).toEqual('/foo?query=bar&start=0&length=5');
   });
 });
 
