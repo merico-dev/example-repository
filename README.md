@@ -36,6 +36,11 @@ $ npm install axios
 
 Tested to work with >=IE8, Chrome, Firefox, Safari, and Opera.
 
+## Promises
+
+axios depends on a native ES6 Promise implementation to be [supported](http://caniuse.com/promises).
+If your environment doesn't support ES6 Promises, you can [polyfill](https://github.com/jakearchibald/es6-promise)
+
 ## Example
 
 Performing a `GET` request
@@ -174,6 +179,10 @@ This is the available config options for making requests. Only the `url` is requ
     firstName: 'Fred'
   },
 
+  // `timeout` specifies the number of milliseconds before the request times out.
+  // If the request takes longer than `timeout`, the request will be aborted.
+  timeout: 1000,
+
   // `withCredentials` indicates whether or not cross-site Access-Control requests
   // should be made using credentials
   withCredentials: false, // default
@@ -287,8 +296,6 @@ axios.get('/user?ID=12345');
 ## Credits
 
 axios is heavily inspired by the [$http service](https://docs.angularjs.org/api/ng/service/$http) provided in [Angular](https://angularjs.org/). Ultimately axios is an effort to provide a standalone `$http`-like service for use outside of Angular.
-
-axios uses the [es6-promise](https://github.com/jakearchibald/es6-promise) polyfill by [Jake Archibald](https://github.com/jakearchibald). Until we [can use](http://caniuse.com/promises) ES6 Promises natively in all browsers, this polyfill is a life saver.
 
 ## License
 
