@@ -12,9 +12,6 @@ function generateConfig(name) {
       library: 'axios',
       libraryTarget: 'umd'
     },
-    node: {
-      process: false
-    },
     externals: [
       {
         './adapters/http': 'var undefined'
