@@ -10,12 +10,12 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine-ajax', 'jasmine'],
+    frameworks: ['jasmine-ajax', 'jasmine', 'sinon'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'test/specs/**/*.spec.js'
+      'webpack.tests.js'
     ],
 
 
@@ -28,27 +28,17 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/specs/**/*.spec.js': ['webpack', 'sourcemap']
+      'webpack.tests.js': ['webpack', 'sourcemap', 'coverage']
     },
 
 
     webpack: {
-      cache: true,
-      devtool: 'inline-source-map',
-      module: {
-        postLoaders: [
-          {
-            test: /\.js$/,
-            exclude: /(node_modules|test)/,
-            loader: 'istanbul-instrumenter'
-          }
-        ]
-      },
       externals: [
         {
           './adapters/http': 'var undefined'
         }
-      ]
+      ],
+      devtool: 'inline-source-map'
     },
 
     webpackServer: {
@@ -62,7 +52,7 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['dots', 'coverage'],
 
-    
+
     coverageReporter: {
       type: 'lcov',
       dir: 'coverage/',

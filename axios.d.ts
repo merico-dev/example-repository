@@ -21,7 +21,6 @@ declare module axios {
   interface Response {
     data?: any;
     status?: number;
-    statusText?: string;
     headers?: any;
     config?: any;
   }
@@ -42,6 +41,7 @@ declare module axios {
     responseType?: string;
     xsrfCookieName?: string;
     xsrfHeaderName?: string;
+    paramsSerializer?: (params: any) => string;
   }
 }
 
