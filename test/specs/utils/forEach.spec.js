@@ -11,6 +11,18 @@ describe('utils::forEach', function () {
     expect(sum).toEqual(15);
   });
 
+  it('should loop over arguments', function () {
+    var sum = 0;
+
+    (function () {
+      forEach(arguments, function (val) {
+        sum += val;
+      });
+    })(1, 2, 3, 4, 5);
+
+    expect(sum).toEqual(15);
+  });
+
   it('should loop over object keys', function () {
     var keys = '';
     var vals = 0;
@@ -49,3 +61,4 @@ describe('utils::forEach', function () {
     expect(count).toEqual(1);
   });
 });
+
