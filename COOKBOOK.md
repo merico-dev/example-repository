@@ -119,7 +119,7 @@ var jsonp = require('jsonp');
 
 jsonp('http://www.example.com/foo', null, function (err, data) {
   if (err) {
-    console.error(err.message);
+    console.error(error.message);
   } else {
     console.log(data);
   }
