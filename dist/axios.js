@@ -1,4 +1,4 @@
-/* axios v0.11.1 | (c) 2016 by Matt Zabriskie */
+/* axios v0.11.0 | (c) 2016 by Matt Zabriskie */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -141,7 +141,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var defaultInstance = new Axios(defaults);
 	var axios = module.exports = bind(Axios.prototype.request, defaultInstance);
-	module.exports.Axios = Axios;
 	
 	// Expose properties from defaultInstance
 	axios.defaults = defaultInstance.defaults;
@@ -294,7 +293,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {boolean} True if value is an FormData, otherwise false
 	 */
 	function isFormData(val) {
-	  return (typeof FormData !== 'undefined') && (val instanceof FormData);
+	  return toString.call(val) === '[object FormData]';
 	}
 	
 	/**
@@ -600,8 +599,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    request = new window.XDomainRequest();
 	    loadEvent = 'onload';
 	    xDomain = true;
-	    request.onprogress = function handleProgress() {};
-	    request.ontimeout = function handleTimeout() {};
 	  }
 	
 	  // HTTP basic authentication
@@ -615,6 +612,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  // Set the request timeout in MS
 	  request.timeout = config.timeout;
+	
+	  // For IE 9 CORS support.
+	  request.onprogress = function handleProgress() {};
+	  request.ontimeout = function handleTimeout() {};
 	
 	  // Listen for ready state
 	  request[loadEvent] = function handleLoad() {
