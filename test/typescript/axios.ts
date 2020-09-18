@@ -1,4 +1,6 @@
-import axios from '../../';
+/// <reference path="../../axios.d.ts" />
+
+import axios = require('axios');
 
 axios.get('/user?ID=12345')
   .then(function (response) {
