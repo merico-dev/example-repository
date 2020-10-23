@@ -1,65 +1,83 @@
-// Type definitions for Axios v0.8.1
-// Project: https://github.com/mzabriskie/axios
-
-
-
-declare var axios: axios.AxiosStatic
-
-declare module axios {
-  interface AxiosRequestMethods {
-    get(url: string, config?: any): axios.Promise;
-    delete(url: string, config?: any): axios.Promise;
-    head(url: string, config?: any): axios.Promise;
-    post(url: string, data: any, config?: any): axios.Promise;
-    put(url: string, data: any, config?: any): axios.Promise;
-    patch(url: string, data: any, config?: any): axios.Promise;
-  }
-
-  interface AxiosStatic extends AxiosRequestMethods {
-    (options: axios.RequestOptions): axios.Promise;
-    create(defaultOptions?: axios.InstanceOptions): AxiosInstance;
-    all(iterable: any): axios.Promise;
-    spread(callback: any): axios.Promise;
-  }
-
-  interface AxiosInstance extends AxiosRequestMethods  {
-    request(options: axios.RequestOptions): axios.Promise;
-  }
-
-  interface Response {
-    data?: any;
-    status?: number;
-    statusText?: string;
-    headers?: any;
-    config?: any;
-  }
-
-  interface Promise {
-    then(onFulfilled:(response: axios.Response) => void): axios.Promise;
-    catch(onRejected:(response: axios.Response) => void): axios.Promise;
-  }
-
-  interface InstanceOptions {
-    transformRequest?: (data: any) => any;
-    transformResponse?: (data: any) => any;
-    headers?: any;
-    timeout?: number;
-    withCredentials?: boolean;
-    responseType?: string;
-    xsrfCookieName?: string;
-    xsrfHeaderName?: string;
-    paramsSerializer?: (params: any) => string;
-    baseURL?: string;
-  }
-
-  interface RequestOptions extends InstanceOptions {
-    url: string;
-    method?: string;
-    params?: any;
-    data?: any;
-  }
+export interface AxiosDataTransformer {
+  (data: any): any;
 }
 
-declare module "axios" {
-  export = axios;
+export interface AxiosRequestConfig {
+  url?: string;
+  method?: string;
+  baseURL?: string;
+  transformRequest?: AxiosDataTransformer | AxiosDataTransformer[];
+  transformResponse?: AxiosDataTransformer | AxiosDataTransformer[];
+  headers?: any;
+  params?: any;
+  paramsSerializer?: (params: any) => string;
+  data?: any;
+  timeout?: number;
+  withCredentials?: boolean;
+  adapter?: any;
+  auth?: any;
+  responseType?: string;
+  xsrfCookieName?: string;
+  xsrfHeaderName?: string;
+  progress?: (progressEvent: any) => void;
+  maxContentLength?: number;
+  validateStatus?: (status: number) => boolean;
+  maxRedirects?: number;
+  httpAgent?: any;
+  httpsAgent?: any;
 }
+
+export interface AxiosResponse {
+  data: any;
+  status: number;
+  statusText: string;
+  headers: any;
+  config: AxiosRequestConfig;
+}
+
+export interface AxiosError extends Error {
+  config: AxiosRequestConfig;
+  code?: string;
+  response?: AxiosResponse;
+}
+
+export interface Promise<V> {
+  then<R1, R2>(onFulfilled: (value: V) => R1 | Promise<R1>, onRejected: (error: any) => R2 | Promise<R2>): Promise<R1 | R2>;
+  then<R>(onFulfilled: (value: V) => R | Promise<R>): Promise<R>;
+  catch<R>(onRejected: (error: any) => R | Promise<R>): Promise<R>;
+}
+
+export interface AxiosPromise extends Promise<AxiosResponse> {
+}
+
+export interface InterceptorManager<V> {
+  use(onFulfilled: (value: V) => V | Promise<V>, onRejected?: (error: any) => any): number;
+  eject(id: number): void;
+}
+
+export interface AxiosInstance {
+  defaults: AxiosRequestConfig;
+  interceptors: {
+    request: InterceptorManager<AxiosRequestConfig>;
+    response: InterceptorManager<AxiosResponse>;
+  };
+  request(config: AxiosRequestConfig): AxiosPromise;
+  get(url: string, config?: AxiosRequestConfig): AxiosPromise;
+  delete(url: string, config?: AxiosRequestConfig): AxiosPromise;
+  head(url: string, config?: AxiosRequestConfig): AxiosPromise;
+  post(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise;
+  put(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise;
+  patch(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise;
+}
+
+export interface AxiosStatic extends AxiosInstance {
+  (config: AxiosRequestConfig): AxiosPromise;
+  (url: string, config?: AxiosRequestConfig): AxiosPromise;
+  create(config?: AxiosRequestConfig): AxiosInstance;
+  all(iterable: any): any;
+  spread(callback: any): any;
+}
+
+declare const Axios: AxiosStatic;
+
+export default Axios;
