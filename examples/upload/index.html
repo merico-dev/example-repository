@@ -27,7 +27,7 @@
           data.append('file', document.getElementById('file').files[0]);
 
           var config = {
-            onUploadProgress: function(progressEvent) {
+            progress: function(progressEvent) {
               var percentCompleted = progressEvent.loaded / progressEvent.total;
             }
           };

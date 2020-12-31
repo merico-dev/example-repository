@@ -22,15 +22,10 @@ const config: AxiosRequestConfig = {
   responseType: 'json',
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
-  onUploadProgress: (progressEvent: any) => {},
-  onDownloadProgress: (progressEvent: any) => {},
+  progress: (progressEvent: any) => {},
   maxContentLength: 2000,
   validateStatus: (status: number) => status >= 200 && status < 300,
-  maxRedirects: 5,
-  proxy: {
-    host: '127.0.0.1',
-    port: 9000
-  }
+  maxRedirects: 5
 };
 
 const handleResponse = (response: AxiosResponse) => {
