@@ -41,7 +41,6 @@ export interface AxiosRequestConfig {
   httpAgent?: any;
   httpsAgent?: any;
   proxy?: AxiosProxyConfig;
-  cancelToken?: CancelToken;
 }
 
 export interface AxiosResponse {
@@ -65,34 +64,6 @@ export interface Promise<V> {
 }
 
 export interface AxiosPromise extends Promise<AxiosResponse> {
-}
-
-export interface CancelStatic {
-  new (message?: string): Cancel;
-}
-
-export interface Cancel {
-  message: string;
-}
-
-export interface Canceler {
-  (message?: string): void;
-}
-
-export interface CancelTokenStatic {
-  new (executor: (cancel: Canceler) => void): CancelToken;
-  source(): CancelTokenSource;
-}
-
-export interface CancelToken {
-  promise: Promise<Cancel>;
-  reason?: Cancel;
-  throwIfRequested(): void;
-}
-
-export interface CancelTokenSource {
-  token: CancelToken;
-  cancel: Canceler;
 }
 
 export interface AxiosInterceptorManager<V> {
@@ -119,9 +90,6 @@ export interface AxiosStatic extends AxiosInstance {
   (config: AxiosRequestConfig): AxiosPromise;
   (url: string, config?: AxiosRequestConfig): AxiosPromise;
   create(config?: AxiosRequestConfig): AxiosInstance;
-  Cancel: CancelStatic;
-  CancelToken: CancelTokenStatic;
-  isCancel(value: any): boolean;
   all<T>(values: (T | Promise<T>)[]): Promise<T[]>;
   spread<T, R>(callback: (...args: T[]) => R): (array: T[]) => R;
 }
