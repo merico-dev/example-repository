@@ -15,6 +15,7 @@ Promise based HTTP client for the browser and node.js
 - Supports the [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) API
 - Intercept request and response
 - Transform request and response data
+- Cancel requests
 - Automatic transforms for JSON data
 - Client side support for protecting against [XSRF](http://en.wikipedia.org/wiki/Cross-site_request_forgery)
 
@@ -142,7 +143,6 @@ For convenience aliases have been provided for all supported request methods.
 ##### axios.post(url[, data[, config]])
 ##### axios.put(url[, data[, config]])
 ##### axios.patch(url[, data[, config]])
-##### axios.options(url[, data[, config]])
 
 ###### NOTE
 When using the alias methods `url`, `method`, and `data` properties don't need to be specified in config.
@@ -306,7 +306,12 @@ These are the available config options for making requests. Only the `url` is re
   proxy: {
     host: '127.0.0.1',
     port: 9000
-  }
+  },
+
+  // `cancelToken` specifies a cancel token that can be used to cancel the request
+  // (see Cancellation section below for details)
+  cancelToken: new CancelToken(function (cancel) {
+  })
 }
 ```
 
@@ -456,6 +461,49 @@ axios.get('/user/12345', {
     return status < 500; // Reject only if the status code is greater than or equal to 500
   }
 })
+```
+
+## Cancellation
+
+You can cancel a request using a *cancel token*.
+
+> The axios cancel token API is based on the [cancelable promises proposal](https://github.com/tc39/proposal-cancelable-promises), which is currently at Stage 1.
+
+You can create a cancel token using the `CancelToken.source` factory as shown below:
+
+```js
+var CancelToken = axios.CancelToken;
+var source = CancelToken.source();
+
+axios.get('/user/12345', {
+  cancelToken: source.token
+}).catch(function(thrown) {
+  if (axios.isCancel(thrown)) {
+    console.log('Request canceled', thrown.message);
+  } else {
+    // handle error
+  }
+});
+
+// cancel the request (the message parameter is optional)
+source.cancel('Operation canceled by the user.');
+```
+
+You can also create a cancel token by passing an executor function to the `CancelToken` constructor:
+
+```js
+var CancelToken = axios.CancelToken;
+var cancel;
+
+axios.get('/user/12345', {
+  cancelToken: new CancelToken(function executor(c) {
+    // An executor function receives a cancel function as a parameter
+    cancel = c;
+  })
+});
+
+// cancel the request
+cancel();
 ```
 
 ## Semver
