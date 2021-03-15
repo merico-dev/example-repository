@@ -199,7 +199,7 @@ These are the available config options for making requests. Only the `url` is re
 
   // `transformRequest` allows changes to the request data before it is sent to the server
   // This is only applicable for request methods 'PUT', 'POST', and 'PATCH'
-  // The last function in the array must return a string, an ArrayBuffer, FormData, or a Stream
+  // The last function in the array must return a string, an ArrayBuffer, or a Stream
   transformRequest: [function (data) {
     // Do whatever you want to transform the data
 
@@ -473,7 +473,7 @@ axios.get('/user/12345', {
 
 You can cancel a request using a *cancel token*.
 
-> The axios cancel token API is based on the [cancelable promises proposal](https://github.com/tc39/proposal-cancelable-promises), which is currently at Stage 1.
+> The axios cancel token API is based on the withdrawn [cancelable promises proposal](https://github.com/tc39/proposal-cancelable-promises).
 
 You can create a cancel token using the `CancelToken.source` factory as shown below:
 
