@@ -125,6 +125,18 @@ axios({
 });
 ```
 
+```js
+// GET request for remote image
+axios({
+  method:'get',
+  url:'http://bit.ly/2mTM3nY',
+  responseType:'stream'
+})
+  .then(function(response) {
+  response.data.pipe(fs.createWriteStream('ada_lovelace.jpg'))
+});
+```
+
 ##### axios(url[, config])
 
 ```js
@@ -248,7 +260,7 @@ These are the available config options for making requests. Only the `url` is re
   withCredentials: false, // default
 
   // `adapter` allows custom handling of requests which makes testing easier.
-  // Return a promise and supply a valid response (see [response docs](#response-api)).
+  // Return a promise and supply a valid response (see lib/adapters/README.md).
   adapter: function (config) {
     /* ... */
   },
@@ -473,7 +485,7 @@ axios.get('/user/12345', {
 
 You can cancel a request using a *cancel token*.
 
-> The axios cancel token API is based on the [cancelable promises proposal](https://github.com/tc39/proposal-cancelable-promises), which is currently at Stage 1.
+> The axios cancel token API is based on the withdrawn [cancelable promises proposal](https://github.com/tc39/proposal-cancelable-promises).
 
 You can create a cancel token using the `CancelToken.source` factory as shown below:
 
@@ -526,7 +538,7 @@ In a browser, you can use the [`URLSearchParams`](https://developer.mozilla.org/
 var params = new URLSearchParams();
 params.append('param1', 'value1');
 params.append('param2', 'value2');
-axios.post('/foo', params); 
+axios.post('/foo', params);
 ```
 
 > Note that `URLSearchParams` is not supported by all browsers, but there is a [polyfill](https://github.com/WebReflection/url-search-params) available (make sure to polyfill the global environment).
@@ -544,7 +556,7 @@ In node.js, you can use the [`querystring`](https://nodejs.org/api/querystring.h
 
 ```js
 var querystring = require('querystring');
-axios.post('http://something.com/', querystring.stringify({ foo: 'bar' });
+axios.post('http://something.com/', querystring.stringify({ foo: 'bar' }));
 ```
 
 You can also use the `qs` library.
