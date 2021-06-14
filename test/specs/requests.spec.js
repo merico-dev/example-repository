@@ -51,9 +51,6 @@ describe('requests', function () {
       expect(reason.config.method).toBe('get');
       expect(reason.config.url).toBe('http://thisisnotaserver');
 
-      // re-enable jasmine.Ajax
-      jasmine.Ajax.install();
-      
       done();
     };
 
@@ -144,7 +141,7 @@ describe('requests', function () {
         expect(response.data.error).toEqual('BAD USERNAME');
         expect(response.data.code).toEqual(1);
         done();
-      }, 100);
+      });
     });
   });
 
@@ -171,7 +168,7 @@ describe('requests', function () {
         expect(response.statusText).toEqual('OK');
         expect(response.headers['content-type']).toEqual('application/json');
         done();
-      }, 100);
+      });
     });
   });
 
@@ -199,7 +196,7 @@ describe('requests', function () {
         expect(response.statusText).toEqual('OK');
         expect(response.headers['content-type']).toEqual('application/json');
         done();
-      }, 100);
+      });
     });
   });
 
@@ -221,7 +218,7 @@ describe('requests', function () {
         expect(response.status).toEqual(204);
         expect(response.statusText).toEqual('No Content');
         done();
-      }, 100);
+      });
     });
   });
 
@@ -320,7 +317,7 @@ describe('requests', function () {
       setTimeout(function () {
         expect(response.data.byteLength).toBe(22);
         done();
-      }, 100);
+      });
     });
   });
 
