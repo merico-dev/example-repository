@@ -15,12 +15,13 @@ Promise based HTTP client for the browser and node.js
 - Supports the [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) API
 - Intercept request and response
 - Transform request and response data
+- Cancel requests
 - Automatic transforms for JSON data
 - Client side support for protecting against [XSRF](http://en.wikipedia.org/wiki/Cross-site_request_forgery)
 
 ## Browser Support
 
-![Chrome](https://raw.github.com/alrra/browser-logos/master/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/firefox/firefox_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/safari/safari_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/opera/opera_48x48.png) | ![Edge](https://raw.github.com/alrra/browser-logos/master/edge/edge_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/internet-explorer/internet-explorer_48x48.png) |
+![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png) |
 --- | --- | --- | --- | --- | --- |
 Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | 8+ ✔ |
 
@@ -139,7 +140,6 @@ For convenience aliases have been provided for all supported request methods.
 ##### axios.get(url[, config])
 ##### axios.delete(url[, config])
 ##### axios.head(url[, config])
-##### axios.options(url[, config])
 ##### axios.post(url[, data[, config]])
 ##### axios.put(url[, data[, config]])
 ##### axios.patch(url[, data[, config]])
@@ -176,7 +176,6 @@ The available instance methods are listed below. The specified config will be me
 ##### axios#get(url[, config])
 ##### axios#delete(url[, config])
 ##### axios#head(url[, config])
-##### axios#options(url[, config])
 ##### axios#post(url[, data[, config]])
 ##### axios#put(url[, data[, config]])
 ##### axios#patch(url[, data[, config]])
@@ -200,7 +199,7 @@ These are the available config options for making requests. Only the `url` is re
 
   // `transformRequest` allows changes to the request data before it is sent to the server
   // This is only applicable for request methods 'PUT', 'POST', and 'PATCH'
-  // The last function in the array must return a string, an ArrayBuffer, or a Stream
+  // The last function in the array must return a string, an ArrayBuffer, FormData, or a Stream
   transformRequest: [function (data) {
     // Do whatever you want to transform the data
 
@@ -249,7 +248,7 @@ These are the available config options for making requests. Only the `url` is re
   withCredentials: false, // default
 
   // `adapter` allows custom handling of requests which makes testing easier.
-  // Return a promise and supply a valid response (see [response docs](#response-api)).
+  // Return a promise and supply a valid response (see lib/adapters/README.md).
   adapter: function (config) {
     /* ... */
   },
@@ -304,10 +303,21 @@ These are the available config options for making requests. Only the `url` is re
   httpsAgent: new https.Agent({ keepAlive: true }),
 
   // 'proxy' defines the hostname and port of the proxy server
+  // `auth` indicates that HTTP Basic auth should be used to connect to the proxy, and supplies credentials.
+  // This will set an `Proxy-Authorization` header, overwriting any existing `Proxy-Authorization` custom headers you have set using `headers`.
   proxy: {
     host: '127.0.0.1',
-    port: 9000
-  }
+    port: 9000,
+    auth: : {
+      username: 'mikeymike',
+      password: 'rapunz3l'
+    }
+  },
+
+  // `cancelToken` specifies a cancel token that can be used to cancel the request
+  // (see Cancellation section below for details)
+  cancelToken: new CancelToken(function (cancel) {
+  })
 }
 ```
 
@@ -458,6 +468,86 @@ axios.get('/user/12345', {
   }
 })
 ```
+
+## Cancellation
+
+You can cancel a request using a *cancel token*.
+
+> The axios cancel token API is based on the withdrawn [cancelable promises proposal](https://github.com/tc39/proposal-cancelable-promises).
+
+You can create a cancel token using the `CancelToken.source` factory as shown below:
+
+```js
+var CancelToken = axios.CancelToken;
+var source = CancelToken.source();
+
+axios.get('/user/12345', {
+  cancelToken: source.token
+}).catch(function(thrown) {
+  if (axios.isCancel(thrown)) {
+    console.log('Request canceled', thrown.message);
+  } else {
+    // handle error
+  }
+});
+
+// cancel the request (the message parameter is optional)
+source.cancel('Operation canceled by the user.');
+```
+
+You can also create a cancel token by passing an executor function to the `CancelToken` constructor:
+
+```js
+var CancelToken = axios.CancelToken;
+var cancel;
+
+axios.get('/user/12345', {
+  cancelToken: new CancelToken(function executor(c) {
+    // An executor function receives a cancel function as a parameter
+    cancel = c;
+  })
+});
+
+// cancel the request
+cancel();
+```
+
+> Note: you can cancel several requests with the same cancel token.
+
+## Using application/x-www-form-urlencoded format
+
+By default, axios serializes JavaScript objects to `JSON`. To send data in the `application/x-www-form-urlencoded` format instead, you can use one of the following options.
+
+### Browser
+
+In a browser, you can use the [`URLSearchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) API as follows:
+
+```js
+var params = new URLSearchParams();
+params.append('param1', 'value1');
+params.append('param2', 'value2');
+axios.post('/foo', params); 
+```
+
+> Note that `URLSearchParams` is not supported by all browsers, but there is a [polyfill](https://github.com/WebReflection/url-search-params) available (make sure to polyfill the global environment).
+
+Alternatively, you can encode data using the [`qs`](https://github.com/ljharb/qs) library:
+
+```js
+var qs = require('qs');
+axios.post('/foo', qs.stringify({ 'bar': 123 }));
+```
+
+### Node.js
+
+In node.js, you can use the [`querystring`](https://nodejs.org/api/querystring.html) module as follows:
+
+```js
+var querystring = require('querystring');
+axios.post('http://something.com/', querystring.stringify({ foo: 'bar' }));
+```
+
+You can also use the `qs` library.
 
 ## Semver
 

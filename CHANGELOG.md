@@ -1,5 +1,39 @@
 # Changelog
 
+### 0.16.0 (Mar 31, 2017)
+
+- **BREAKING** Removing `Promise` from axios typings in favor of built-in type declarations ([#480](https://github.com/mzabriskie/axios/issues/480))
+- Adding `options` shortcut method ([#461](https://github.com/mzabriskie/axios/pull/461))
+- Fixing issue with using `responseType: 'json'` in browsers incompatible with XHR Level 2 ([#654](https://github.com/mzabriskie/axios/pull/654))
+- Improving React Native detection ([#731](https://github.com/mzabriskie/axios/pull/731))
+- Fixing `combineURLs` to support empty `relativeURL` ([#581](https://github.com/mzabriskie/axios/pull/581))
+- Removing `PROTECTION_PREFIX` support ([#561](https://github.com/mzabriskie/axios/pull/561))
+
+### 0.15.3 (Nov 27, 2016)
+
+- Fixing issue with custom instances and global defaults ([#443](https://github.com/mzabriskie/axios/issues/443))
+- Renaming `axios.d.ts` to `index.d.ts` ([#519](https://github.com/mzabriskie/axios/issues/519))
+- Adding `get`, `head`, and `delete` to `defaults.headers` ([#509](https://github.com/mzabriskie/axios/issues/509))
+- Fixing issue with `btoa` and IE ([#507](https://github.com/mzabriskie/axios/issues/507))
+- Adding support for proxy authentication ([#483](https://github.com/mzabriskie/axios/pull/483))
+- Improving HTTP adapter to use `http` protocol by default ([#493](https://github.com/mzabriskie/axios/pull/493))
+- Fixing proxy issues ([#491](https://github.com/mzabriskie/axios/pull/491))
+
+### 0.15.2 (Oct 17, 2016)
+
+- Fixing issue with calling `cancel` after response has been received ([#482](https://github.com/mzabriskie/axios/issues/482))
+
+### 0.15.1 (Oct 14, 2016)
+
+- Fixing issue with UMD ([#485](https://github.com/mzabriskie/axios/issues/485))
+
+### 0.15.0 (Oct 10, 2016)
+
+- Adding cancellation support ([#452](https://github.com/mzabriskie/axios/pull/452))
+- Moving default adapter to global defaults ([#437](https://github.com/mzabriskie/axios/pull/437))
+- Fixing issue with `file` URI scheme ([#440](https://github.com/mzabriskie/axios/pull/440))
+- Fixing issue with `params` objects that have no prototype ([#445](https://github.com/mzabriskie/axios/pull/445))
+
 ### 0.14.0 (Aug 27, 2016)
 
 - **BREAKING** Updating TypeScript definitions ([#419](https://github.com/mzabriskie/axios/pull/419))

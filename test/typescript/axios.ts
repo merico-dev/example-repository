@@ -1,5 +1,14 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError, AxiosInstance, AxiosAdapter } from '../../';
-import { Promise } from 'es6-promise';
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+  AxiosInstance,
+  AxiosAdapter,
+  Cancel,
+  CancelToken,
+  CancelTokenSource,
+  Canceler
+} from '../../';
 
 const config: AxiosRequestConfig = {
   url: '/user',
@@ -30,7 +39,8 @@ const config: AxiosRequestConfig = {
   proxy: {
     host: '127.0.0.1',
     port: 9000
-  }
+  },
+  cancelToken: new axios.CancelToken((cancel: Canceler) => {})
 };
 
 const handleResponse = (response: AxiosResponse) => {
@@ -210,3 +220,18 @@ axios.get('/user')
 axios.get('/user')
   .catch((error: any) => Promise.resolve('foo'))
   .then((value: string) => {});
+
+// Cancellation
+
+const source: CancelTokenSource = axios.CancelToken.source();
+
+axios.get('/user', {
+  cancelToken: source.token
+}).catch((thrown: AxiosError | Cancel) => {
+  if (axios.isCancel(thrown)) {
+    const cancel: Cancel = thrown;
+    console.log(cancel.message);
+  }
+});
+
+source.cancel('Operation has been canceled.');
